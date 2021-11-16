@@ -75,7 +75,6 @@ class BookInstance(models.Model):
     class Meta:
         ordering = ["due_back"]
 
-
     def __str__(self):
         """
         String for representing the Model object
@@ -99,12 +98,15 @@ class Author(models.Model):
         """
         return reverse('author-detail', args=[str(self.id)])
 
-
     def __str__(self):
         """
         String for representing the Model object.
         """
         return '%s, %s' % (self.last_name, self.first_name)
+
+    class Meta:
+        ordering = ['last_name', 'first_name']
+
 
 class Language(models.Model):
     """Model representing a Language (e.g. English, French, Japanese, etc.)"""

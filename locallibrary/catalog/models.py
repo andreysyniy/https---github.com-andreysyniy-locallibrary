@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.auth.models import User
+from datetime import date
 
 # Create your models here.
 
@@ -30,7 +32,7 @@ class Book(models.Model):
     genre = models.ManyToManyField(Genre, help_text="Select a genre for this book")
     # ManyToManyField used because genre can contain many books. Books can cover many genres.
     # Genre class has already been defined so we can specify the object above.
-
+    language = models.ForeignKey('Language', on_delete=models.SET_NULL, null=True)
     def __str__(self):
         """
         String for representing the Model object.
@@ -74,12 +76,22 @@ class BookInstance(models.Model):
 
     class Meta:
         ordering = ["due_back"]
+        permissions = (("can_mark_returned", "Set book as returned"),) 
 
     def __str__(self):
         """
         String for representing the Model object
         """
         return '%s (%s)' % (self.id,self.book.title)
+
+    borrower = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+
+    @property
+    def is_overdue(self):
+        if self.due_back and date.today() > self.due_back:
+            return True
+        return False
+
 
 
 
